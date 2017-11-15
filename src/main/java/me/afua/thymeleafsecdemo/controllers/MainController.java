@@ -2,20 +2,21 @@ package me.afua.thymeleafsecdemo.controllers;
 
 import me.afua.thymeleafsecdemo.entities.UserData;
 import me.afua.thymeleafsecdemo.repositories.RoleRepository;
+import me.afua.thymeleafsecdemo.security.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
 public class MainController {
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/")
     public String showMainPage(Principal p) {
@@ -28,6 +29,7 @@ public class MainController {
     {
         return "login";
     }
+
     @RequestMapping("/pageone")
     public String showPageOne(Model model)
     {
@@ -45,10 +47,17 @@ public class MainController {
     }
 
     @PostMapping("/register")
-    public String processRegistrationPage(@Valid @ModelAttribute("user") UserData user,
+    public String processRegistrationPage(@Valid @ModelAttribute("user") UserData userData,
                                           BindingResult bindingresult, Model model)
     {
-        return "";
+        model.addAttribute("user", userData);
+        if (bindingresult.hasErrors()) {
+            return "register";
+        } else {
+            userService.saveUser(userData);
+            model.addAttribute("message", "User Account Succesfully Created!");
+        }
+        return "index";
     }
     @RequestMapping("/pagetwo")
     public String showPageTwo(Model model)

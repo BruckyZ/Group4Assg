@@ -16,6 +16,13 @@ public class UserRole {
     @ManyToMany(mappedBy = "roles",fetch=FetchType.LAZY)
     private Set<UserData> users;
 
+    public UserRole() {
+    }
+
+    public UserRole(String role) {
+        this.role = role;
+    }
+
     public long getId() {
         return id;
     }

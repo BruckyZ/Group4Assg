@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -30,6 +31,20 @@ public class UserData {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<UserRole> roles;
+
+    public UserData() {
+        roles = new HashSet<>();
+    }
+
+    public UserData(String email, String password, String firstName, String lastName, boolean enabled, String username) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.enabled = enabled;
+        this.username = username;
+        roles = new HashSet<>();
+    }
 
     public long getId() {
         return id;
@@ -93,5 +108,9 @@ public class UserData {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public void addRoles(UserRole aRole) {
+        roles.add(aRole);
     }
 }
